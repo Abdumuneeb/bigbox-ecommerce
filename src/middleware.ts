@@ -6,7 +6,7 @@ export function middleware(req: NextRequest) {
   const res = NextResponse.next();
   res.headers.set(
     "Access-Control-Allow-Origin",
-    "https://bigbox-ecommerce-git-main-abdumuneebs-projects.vercel.app/"
+    "https://bigbox-ecommerce.vercel.app"
   );
   res.headers.set(
     "Access-Control-Allow-Methods",

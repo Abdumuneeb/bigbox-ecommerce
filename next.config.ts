@@ -8,8 +8,7 @@ const nextConfig = {
         headers: [
           {
             key: "Access-Control-Allow-Origin",
-            value:
-              "https://bigbox-ecommerce-git-main-abdumuneebs-projects.vercel.app", // ← your real production domain
+            value: "https://bigbox-ecommerce.vercel.app",
           },
           {
             key: "Access-Control-Allow-Methods",
