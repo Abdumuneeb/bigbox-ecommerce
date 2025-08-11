@@ -1,3 +1,25 @@
+// next.config.js
 module.exports = {
-  // Add any other Next.js config options here if needed
+  async headers() {
+    return [
+      {
+        source: "/api/:path*",
+        headers: [
+          {
+            key: "Access-Control-Allow-Origin",
+            value:
+              "https://bigbox-ecommerce-cn705quc6-abdumuneebs-projects.vercel.app",
+          },
+          {
+            key: "Access-Control-Allow-Methods",
+            value: "GET,POST,PUT,DELETE,OPTIONS",
+          },
+          {
+            key: "Access-Control-Allow-Headers",
+            value: "Content-Type,Authorization",
+          },
+        ],
+      },
+    ];
+  },
 };
