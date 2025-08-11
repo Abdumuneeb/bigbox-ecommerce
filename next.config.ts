@@ -1,5 +1,6 @@
 // next.config.js
-module.exports = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   async headers() {
     return [
       {
@@ -7,8 +8,7 @@ module.exports = {
         headers: [
           {
             key: "Access-Control-Allow-Origin",
-            value:
-              "https://bigbox-ecommerce-cn705quc6-abdumuneebs-projects.vercel.app",
+            value: "https://bigbox-ecommerce.vercel.app", // ← your real production domain
           },
           {
             key: "Access-Control-Allow-Methods",
@@ -23,3 +23,5 @@ module.exports = {
     ];
   },
 };
+
+module.exports = nextConfig;
