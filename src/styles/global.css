@@ -242,6 +242,14 @@ h6,
   background-size: cover;
 }
 
+.dashboard {
+  margin-top: -75px;
+  background: url(../../public/images/bg-hero.png) center center no-repeat;
+  background-size: cover;
+  background-color: red;
+  height: 100vh !important;
+}
+
 .hero-header .breadcrumb-item + .breadcrumb-item::before {
   color: var(--light);
 }
@@ -779,4 +787,45 @@ table tr {
   width: 60px;
   height: 60px;
   object-fit: cover;
+}
+
+.appbar {
+  background-color: #fff !important;
+  color: #000 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-header {
+  padding: 16px;
+  font-weight: bold;
+  text-align: center;
+  background-color: #fff;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.MuiDrawer-paper {
+  background-color: #fafafa !important;
+}
+
+.search-box {
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+.stat-card {
+  padding: 20px;
+  font-size: 1.1rem;
+  text-align: center;
+  font-weight: bold;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.big-section {
+  padding: 30px;
+  background: white;
+  border-radius: 12px;
+  min-height: 200px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }

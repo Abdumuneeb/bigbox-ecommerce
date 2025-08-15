@@ -21,26 +21,28 @@ const Navbar = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [orderCount, setOrderCount] = useState(0);
+  const userId = Cookies.get("id");
 
-  // const getCartItems = async () => {
-  //   try {
-  //     const result = await axiosInstances.get(api.getOrders);
-  //     if (result.status === 200) {
-  //       setOrderCount(result.data.length);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching product:", error);
-  //   }
-  // };
+  const getCartItems = async () => {
+    try {
+      const result = await axiosInstances.get(api.getOrders(userId));
+      if (result.status === 200) {
+        setOrderCount(result.data.length);
+      }
+    } catch (error) {
+      console.error("Error fetching product:", error);
+    }
+  };
 
   useEffect(() => {
     // Client-side cookie access
-    // getCartItems();
+    getCartItems();
     const nameCookie = Cookies.get("name");
     const emailCookie = Cookies.get("email");
     setName(nameCookie || "");
     setEmail(emailCookie || "");
   }, []);
+  console.log("orderCount", orderCount);
 
   const initial = name?.charAt(0).toUpperCase() || "";
 
@@ -80,27 +82,6 @@ const Navbar = () => {
               <Link href="/home" className="nav-item nav-link">
                 Home
               </Link>
-              {/* <Link
-                href="#"
-                className="nav-item nav-link category-link"
-                data-category="Educational Robots"
-              >
-                Educational Robots
-              </Link> */}
-              {/* <Link
-                href="#"
-                className="nav-item nav-link category-link"
-                data-category="Industrial Robots"
-              >
-                Industrial Robots
-              </Link> */}
-              {/* <Link
-                href="#"
-                className="nav-item nav-link category-link"
-                data-category="Service Robots"
-              >
-                Service Robots
-              </Link> */}
             </div>
           </div>
 
@@ -154,7 +135,7 @@ const Navbar = () => {
               />
             </svg>
             <span className="position-absolute top-4 start-100 translate-middle badge rounded-pill bg-danger">
-              {0}
+              {orderCount}
             </span>
           </Link>
 

@@ -112,7 +112,7 @@ export default function SignupForm() {
           className="text-center text-purple mb-2"
           style={{ color: "#7e57c2" }}
         >
-          E-commerce
+          BugBox
         </h1>
         <h4 className="text-center mb-4">Sign Up</h4>
 

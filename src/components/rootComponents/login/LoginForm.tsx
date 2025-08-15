@@ -20,7 +20,9 @@ export default function LoginForm() {
       try {
         const result = await axiosInstances.post(api.signIn, values);
         if (result?.status === 200) {
-          router.push("/home");
+          if (result.data.user.isAdmin) {
+            router.push("/dashboard");
+          } else router.push("/home");
           toast.success("Login successful");
         }
       } catch (error: any) {
@@ -101,7 +103,7 @@ export default function LoginForm() {
         }}
       >
         <h1 className="text-center mb-2" style={{ color: "#7e57c2" }}>
-          E-commerce
+          BugBox
         </h1>
         <h4 className="text-center mb-4">Login</h4>
 
