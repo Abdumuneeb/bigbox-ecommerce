@@ -73,10 +73,53 @@ export async function updateProductHandler(req: NextRequest, { params }: any) {
   try {
     const { id } = await params;
     await connectDB();
-    const updated = await Product.findByIdAndUpdate(id, await req.json(), {
+
+    const formData = await req.formData();
+
+    const title = formData.get("title") as string;
+    const description = formData.get("description") as string;
+    const price = Number(formData.get("price"));
+    const stock = Number(formData.get("stock"));
+    const imageFile = formData.get("image") as File | null;
+
+    let updateData: any = {
+      title,
+      description,
+      price,
+      stock,
+    };
+
+    // if new image uploaded, replace
+    if (imageFile && typeof imageFile !== "string") {
+      const buffer = Buffer.from(await imageFile.arrayBuffer());
+
+      const uploadedImage = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: "products" },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+        stream.end(buffer);
+      });
+
+      const { secure_url } = uploadedImage as any;
+      updateData.image = secure_url;
+    }
+
+    const updated = await Product.findByIdAndUpdate(id, updateData, {
       new: true,
     });
-    return NextResponse.json(updated);
+
+    if (!updated) {
+      return NextResponse.json(
+        { message: "Product not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(updated, { status: 200 });
   } catch (error: any) {
     return NextResponse.json(
       { message: error.message || "Internal Server Error" },

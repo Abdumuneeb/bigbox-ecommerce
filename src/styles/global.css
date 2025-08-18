@@ -250,6 +250,14 @@ h6,
   height: 100vh !important;
 }
 
+.dashboard {
+  margin-top: -75px;
+  background: url(../../public/images/bg-hero.png) center center no-repeat;
+  background-size: cover;
+  background-color: red;
+  height: 100vh !important;
+}
+
 .hero-header .breadcrumb-item + .breadcrumb-item::before {
   color: var(--light);
 }
@@ -823,9 +831,26 @@ table tr {
 }
 
 .big-section {
-  padding: 30px;
+  /* padding: 30px; */
   background: white;
   border-radius: 12px;
   min-height: 200px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Restore proper MUI outlined border */
+.MuiOutlinedInput-root > fieldset {
+  border: 1px solid rgba(0, 0, 0, 0.23) !important;
+  border-radius: 8px !important; /* rounded corners */
+}
+
+/* On hover */
+.MuiOutlinedInput-root:hover > fieldset {
+  border-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* On focus */
+.MuiOutlinedInput-root.Mui-focused > fieldset {
+  border-color: #1976d2 !important; /* MUI primary color */
+  border-width: 2px !important;
 }

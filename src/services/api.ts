@@ -9,4 +9,6 @@ export const api = {
   addToCart: "api/orders",
   removeProductFromCart: (id: any) => `api/orders/${id}`,
   updateProductStatus: (id: any) => `api/orders/${id}`,
+  updateProduct: (id: any) => `api/products/${id}`,
+  removeProduct: (id: any) => `api/products/${id}`,
 };

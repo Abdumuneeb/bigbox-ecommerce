@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -15,23 +15,57 @@ import {
   Paper,
   Avatar,
   ListItemButton,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import Link from "next/link";
+import Cookies from "js-cookie";
+import { usePathname, useRouter } from "next/navigation";
 
 const drawerWidth = 240;
 
 const layout = ({ children }: any) => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const initial = name?.charAt(0).toUpperCase() || "";
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    // Client-side cookie access
+    const nameCookie = Cookies.get("name");
+    const emailCookie = Cookies.get("email");
+    setName(nameCookie || "");
+    setEmail(emailCookie || "");
+  }, []);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    Cookies.remove("name");
+    Cookies.remove("email");
+    Cookies.remove("token");
+    Cookies.remove("id");
+    router.push("/login");
   };
 
   const drawer = (
     <div>
       <div className="sidebar-header">
         <Typography variant="h6" noWrap>
-          Big Bux
+          Bug Box
         </Typography>
       </div>
       <List>
@@ -49,7 +83,18 @@ const layout = ({ children }: any) => {
                 color: "inherit",
               }}
             >
-              <ListItemButton>
+              <ListItemButton
+                sx={{
+                  backgroundColor:
+                    pathname === item.path ? "blue" : "transparent",
+                  color: pathname === item.path ? "white" : "inherit",
+                  borderRadius: "8px",
+                  "&:hover": {
+                    backgroundColor:
+                      pathname === item.path ? "blue" : "rgba(0,0,0,0.08)",
+                  },
+                }}
+              >
                 <ListItemText primary={item.text} />
               </ListItemButton>
             </Link>
@@ -58,6 +103,7 @@ const layout = ({ children }: any) => {
       </List>
     </div>
   );
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -79,7 +125,43 @@ const layout = ({ children }: any) => {
             {/* <MenuIcon /> */}
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
-          <Avatar alt="Profile" src="https://via.placeholder.com/40" />
+          {/* <Avatar alt="Profile" src="https://via.placeholder.com/40" /> */}
+
+          <Box ml={2}>
+            <IconButton onClick={handleMenuOpen} size="small">
+              <Avatar sx={{ bgcolor: "#1976d2", width: 40, height: 40 }}>
+                {initial}
+              </Avatar>
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+              PaperProps={{
+                elevation: 3,
+                sx: {
+                  borderRadius: 2,
+                  minWidth: 220,
+                  p: 1,
+                },
+              }}
+              transformOrigin={{ horizontal: "right", vertical: "top" }}
+              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+            >
+              <Box px={2} py={1}>
+                <Typography fontWeight={600}>{name}</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {email}
+                </Typography>
+              </Box>
+              <MenuItem
+                onClick={handleLogout}
+                sx={{ mt: 1, borderTop: "1px solid #eee" }}
+              >
+                Logout
+              </MenuItem>
+            </Menu>
+          </Box>
         </Toolbar>
       </AppBar>
 
@@ -121,18 +203,6 @@ const layout = ({ children }: any) => {
         }}
       >
         <Toolbar />
-        <Grid container spacing={2}>
-          {[
-            "3,256 Total Patients",
-            "394 Available Staff",
-            "$2,536 Avg Costs",
-            "38 Available Cars",
-          ].map((text, idx) => (
-            <Grid key={idx} size={{ xs: 12, sm: 6, md: 3 }}>
-              <Paper className="stat-card">{text}</Paper>
-            </Grid>
-          ))}
-        </Grid>
         <Box mt={4}>
           <Paper className="big-section">{children}</Paper>
         </Box>
