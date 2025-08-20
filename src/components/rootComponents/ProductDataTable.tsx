@@ -119,6 +119,10 @@ export default function ProductsTable() {
           getProducts();
         }
       } else {
+        if (!formData.image) {
+          alert("Please upload an image before adding the product.");
+          return;
+        }
         const res = await axiosInstances.post(api.getProducts, fd);
         if (res.status === 201) {
           getProducts();
@@ -254,6 +258,7 @@ export default function ProductsTable() {
                   <label className="form-label">Title</label>
                   <input
                     type="text"
+                    required
                     className="form-control"
                     value={formData.title}
                     onChange={(e) =>
@@ -264,8 +269,9 @@ export default function ProductsTable() {
                 <div className="mb-3">
                   <label className="form-label">Description</label>
                   <textarea
+                    required
                     className="form-control"
-                    rows={3}
+                    rows={8}
                     value={formData.description}
                     onChange={(e) =>
                       setFormData({ ...formData, description: e.target.value })
@@ -291,6 +297,7 @@ export default function ProductsTable() {
                     type="number"
                     className="form-control"
                     value={formData.price}
+                    required
                     onChange={(e) =>
                       setFormData({
                         ...formData,
@@ -305,6 +312,7 @@ export default function ProductsTable() {
                     type="number"
                     className="form-control"
                     value={formData.stock}
+                    required
                     onChange={(e) =>
                       setFormData({
                         ...formData,

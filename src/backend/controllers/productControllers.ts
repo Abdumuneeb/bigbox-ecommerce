@@ -7,7 +7,10 @@ import cloudinary from "../config/cloudinary";
 export async function getProductsHandler() {
   try {
     await connectDB();
-    const products = await Product.find();
+
+    // ✅ filter products with stock greater than 0
+    const products = await Product.find({ stock: { $gt: 0 } });
+
     return NextResponse.json(products);
   } catch (error: any) {
     return NextResponse.json(
@@ -143,12 +146,18 @@ export async function deleteProductHandler(req: NextRequest, { params }: any) {
   }
 }
 
-// ✅ GET: Get product by ID
+// ✅ GET: Get product by ID + increment views
 export const getProductHandler = async (req: NextRequest, { params }: any) => {
   try {
     const { id } = await params;
     await connectDB();
-    const product = await Product.findById(id);
+
+    // ✅ find product and increment views
+    const product = await Product.findByIdAndUpdate(
+      id,
+      { $inc: { views: 1 } },
+      { new: true } // return updated doc with incremented views
+    );
 
     if (!product) {
       return NextResponse.json(
@@ -165,3 +174,22 @@ export const getProductHandler = async (req: NextRequest, { params }: any) => {
     );
   }
 };
+
+export async function getMostPurchasedProductsHandler() {
+  try {
+    await connectDB();
+
+    // ✅ return products sorted by purchases (desc = most purchased first)
+    // ✅ also exclude products with stock = 0 (optional)
+    const products = await Product.find({ stock: { $gt: 0 } }).sort({
+      purchases: -1,
+    }); // -1 = descending, highest purchases first
+
+    return NextResponse.json(products);
+  } catch (error: any) {
+    return NextResponse.json(
+      { message: error.message || "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}

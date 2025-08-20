@@ -1,5 +1,3 @@
-import { get } from "http";
-
 export const api = {
   signIn: "api/auth/login",
   signUp: "api/auth/signup",
@@ -11,4 +9,5 @@ export const api = {
   updateProductStatus: (id: any) => `api/orders/${id}`,
   updateProduct: (id: any) => `api/products/${id}`,
   removeProduct: (id: any) => `api/products/${id}`,
+  getMostPurchasedProducts: "api/products/most-purchased",
 };

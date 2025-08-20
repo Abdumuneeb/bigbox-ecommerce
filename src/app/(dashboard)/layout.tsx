@@ -11,7 +11,6 @@ import {
   ListItemText,
   CssBaseline,
   Box,
-  Grid,
   Paper,
   Avatar,
   ListItemButton,
@@ -68,10 +67,14 @@ const layout = ({ children }: any) => {
           Bug Box
         </Typography>
       </div>
-      <List>
+      <List
+        sx={{
+          paddingRight: "2rem",
+        }}
+      >
         {[
           { text: "Inventory", path: "/inventory" },
-          { text: "Stats", path: "/statistics" },
+          { text: "Analytics", path: "/statistics" },
         ].map((item) => (
           <ListItem key={item.text} disablePadding>
             <Link
@@ -86,12 +89,12 @@ const layout = ({ children }: any) => {
               <ListItemButton
                 sx={{
                   backgroundColor:
-                    pathname === item.path ? "blue" : "transparent",
+                    pathname === item.path ? "#1f5b51" : "transparent",
                   color: pathname === item.path ? "white" : "inherit",
                   borderRadius: "8px",
                   "&:hover": {
                     backgroundColor:
-                      pathname === item.path ? "blue" : "rgba(0,0,0,0.08)",
+                      pathname === item.path ? "#1f5b51" : "rgba(0,0,0,0.08)",
                   },
                 }}
               >
@@ -154,6 +157,34 @@ const layout = ({ children }: any) => {
                   {email}
                 </Typography>
               </Box>
+
+              <List sx={{ p: 0 }}>
+                {[
+                  { text: "Inventory", path: "/inventory" },
+                  { text: "Analytics", path: "/statistics" },
+                ].map((item) => (
+                  <ListItem
+                    key={item.text}
+                    disablePadding
+                    sx={{ pl: 0 }} // <-- removes left padding
+                  >
+                    <Link
+                      href={item.path}
+                      passHref
+                      style={{
+                        width: "100%",
+                        textDecoration: "none",
+                        color: "inherit",
+                      }}
+                    >
+                      <ListItemButton sx={{ borderRadius: "8px" }}>
+                        <ListItemText primary={item.text} />
+                      </ListItemButton>
+                    </Link>
+                  </ListItem>
+                ))}
+              </List>
+
               <MenuItem
                 onClick={handleLogout}
                 sx={{ mt: 1, borderTop: "1px solid #eee" }}
