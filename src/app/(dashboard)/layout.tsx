@@ -11,11 +11,13 @@ import {
   ListItemText,
   CssBaseline,
   Box,
-  Paper,
   Avatar,
   ListItemButton,
   Menu,
   MenuItem,
+  Divider,
+  ListItemIcon,
+  Paper,
 } from "@mui/material";
 import Link from "next/link";
 import Cookies from "js-cookie";
@@ -23,7 +25,52 @@ import { usePathname, useRouter } from "next/navigation";
 
 const drawerWidth = 240;
 
-const layout = ({ children }: any) => {
+// ✅ Inline SVG icons
+const InventoryIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    height="20"
+    width="20"
+    fill="currentColor"
+  >
+    <path d="M4 6V4q0-.825.588-1.413Q5.175 2 6 2h8q.825 0 1.413.587Q16 3.175 16 4v2zM6 18q-.825 0-1.413-.587Q4 16.825 4 16V8h12v8q0 .825-.587 1.413Q14.825 18 14 18z" />
+  </svg>
+);
+
+const BarChartIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    height="20"
+    width="20"
+    fill="currentColor"
+  >
+    <path d="M5 17h2V7H5zm6 0h2V3h-2zm6 0h2v-8h-2z" />
+  </svg>
+);
+
+const LogoutIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    height="20"
+    width="20"
+    fill="currentColor"
+  >
+    <path d="M10.8 17v-2H16V9h-5.2V7H18v10ZM4 20q-.825 0-1.413-.587Q2 18.825 2 18V6q0-.825.587-1.413Q3.175 4 4 4h6v2H4v12h6v2Z" />
+  </svg>
+);
+
+const MenuIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    height="24"
+    width="24"
+    fill="currentColor"
+  >
+    <path d="M3 18h18v-2H3zm0-5h18v-2H3zm0-5h18V6H3z" />
+  </svg>
+);
+
+const Layout = ({ children }: any) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [name, setName] = useState("");
@@ -33,24 +80,16 @@ const layout = ({ children }: any) => {
   const pathname = usePathname();
 
   useEffect(() => {
-    // Client-side cookie access
     const nameCookie = Cookies.get("name");
     const emailCookie = Cookies.get("email");
     setName(nameCookie || "");
     setEmail(emailCookie || "");
   }, []);
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
-
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
+  const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
+  const handleMenuOpen = (e: React.MouseEvent<HTMLElement>) =>
+    setAnchorEl(e.currentTarget);
+  const handleMenuClose = () => setAnchorEl(null);
 
   const handleLogout = () => {
     Cookies.remove("name");
@@ -63,18 +102,13 @@ const layout = ({ children }: any) => {
   const drawer = (
     <div>
       <div className="sidebar-header">
-        <Typography variant="h6" noWrap>
-          Bug Box
-        </Typography>
+        <Typography variant="h6">🐞 Bug Box</Typography>
       </div>
-      <List
-        sx={{
-          paddingRight: "2rem",
-        }}
-      >
+      <Divider />
+      <List>
         {[
-          { text: "Inventory", path: "/inventory" },
-          { text: "Analytics", path: "/statistics" },
+          { text: "Inventory", path: "/inventory", icon: <InventoryIcon /> },
+          { text: "Analytics", path: "/statistics", icon: <BarChartIcon /> },
         ].map((item) => (
           <ListItem key={item.text} disablePadding>
             <Link
@@ -89,15 +123,25 @@ const layout = ({ children }: any) => {
               <ListItemButton
                 sx={{
                   backgroundColor:
-                    pathname === item.path ? "#1f5b51" : "transparent",
-                  color: pathname === item.path ? "white" : "inherit",
+                    pathname === item.path ? "var(--primary)" : "transparent",
+                  color: pathname === item.path ? "#fff" : "inherit",
                   borderRadius: "8px",
+                  m: 0.5,
                   "&:hover": {
                     backgroundColor:
-                      pathname === item.path ? "#1f5b51" : "rgba(0,0,0,0.08)",
+                      pathname === item.path
+                        ? "var(--primary)"
+                        : "rgba(18,107,119,0.08)",
                   },
                 }}
               >
+                <ListItemIcon
+                  sx={{
+                    color: pathname === item.path ? "#fff" : "var(--primary)",
+                  }}
+                >
+                  {item.icon}
+                </ListItemIcon>
                 <ListItemText primary={item.text} />
               </ListItemButton>
             </Link>
@@ -108,116 +152,86 @@ const layout = ({ children }: any) => {
   );
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", backgroundColor: "#f4f7fe" }}>
       <CssBaseline />
-      <AppBar
-        position="fixed"
-        className="appbar"
-        sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
-        }}
-      >
+      <AppBar position="fixed" className="appbar">
         <Toolbar>
+          {/* Hamburger always visible on xs, sm, md */}
           <IconButton
             color="inherit"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
+            sx={{
+              mr: 2,
+              display: { xs: "block", sm: "block", md: "block", lg: "none" },
+            }}
           >
-            {/* <MenuIcon /> */}
+            <MenuIcon />
           </IconButton>
+
+          <Typography variant="h6" fontWeight="600" color="var(--primary)">
+            Dashboard
+          </Typography>
+
           <Box sx={{ flexGrow: 1 }} />
-          {/* <Avatar alt="Profile" src="https://via.placeholder.com/40" /> */}
-
-          <Box ml={2}>
-            <IconButton onClick={handleMenuOpen} size="small">
-              <Avatar sx={{ bgcolor: "#1976d2", width: 40, height: 40 }}>
-                {initial}
-              </Avatar>
-            </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-              PaperProps={{
-                elevation: 3,
-                sx: {
-                  borderRadius: 2,
-                  minWidth: 220,
-                  p: 1,
-                },
-              }}
-              transformOrigin={{ horizontal: "right", vertical: "top" }}
-              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-            >
-              <Box px={2} py={1}>
-                <Typography fontWeight={600}>{name}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {email}
-                </Typography>
-              </Box>
-
-              <List sx={{ p: 0 }}>
-                {[
-                  { text: "Inventory", path: "/inventory" },
-                  { text: "Analytics", path: "/statistics" },
-                ].map((item) => (
-                  <ListItem
-                    key={item.text}
-                    disablePadding
-                    sx={{ pl: 0 }} // <-- removes left padding
-                  >
-                    <Link
-                      href={item.path}
-                      passHref
-                      style={{
-                        width: "100%",
-                        textDecoration: "none",
-                        color: "inherit",
-                      }}
-                    >
-                      <ListItemButton sx={{ borderRadius: "8px" }}>
-                        <ListItemText primary={item.text} />
-                      </ListItemButton>
-                    </Link>
-                  </ListItem>
-                ))}
-              </List>
-
-              <MenuItem
-                onClick={handleLogout}
-                sx={{ mt: 1, borderTop: "1px solid #eee" }}
-              >
-                Logout
-              </MenuItem>
-            </Menu>
-          </Box>
+          <IconButton onClick={handleMenuOpen} size="small">
+            <Avatar sx={{ bgcolor: "var(--primary)", width: 40, height: 40 }}>
+              {initial}
+            </Avatar>
+          </IconButton>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+            PaperProps={{
+              elevation: 3,
+              sx: { borderRadius: 2, minWidth: 220, p: 1 },
+            }}
+          >
+            <Box px={2} py={1}>
+              <Typography fontWeight={600}>{name}</Typography>
+              <Typography variant="body2" color="text.secondary">
+                {email}
+              </Typography>
+            </Box>
+            <Divider />
+            <MenuItem onClick={handleLogout}>
+              <LogoutIcon /> Logout
+            </MenuItem>
+          </Menu>
         </Toolbar>
       </AppBar>
 
-      {/* Sidebar */}
       <Box
         component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        sx={{
+          width: { xs: 0, md: drawerWidth },
+          flexShrink: { sm: 0 },
+        }}
       >
+        {/* Mobile drawer */}
         <Drawer
           variant="temporary"
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{ keepMounted: true }}
           sx={{
-            display: { xs: "block", sm: "none" },
+            display: { xs: "block", lg: "none" },
             "& .MuiDrawer-paper": { width: drawerWidth },
           }}
         >
           {drawer}
         </Drawer>
+
+        {/* Desktop drawer */}
         <Drawer
           variant="permanent"
           sx={{
-            display: { xs: "none", sm: "block" },
-            "& .MuiDrawer-paper": { width: drawerWidth },
+            display: { xs: "none", md: "block" },
+            "& .MuiDrawer-paper": {
+              width: drawerWidth,
+              boxSizing: "border-box",
+            },
           }}
           open
         >
@@ -225,21 +239,20 @@ const layout = ({ children }: any) => {
         </Drawer>
       </Box>
 
+      {/* Main content */}
       <Box
         component="main"
         sx={{
           flexGrow: 1,
           p: 3,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          width: { xs: `calc(100% - ${drawerWidth}px)`, md: "100%" },
         }}
       >
-        <Toolbar />
-        <Box mt={4}>
-          <Paper className="big-section">{children}</Paper>
-        </Box>
+        <Toolbar /> {/* Keeps content below AppBar */}
+        <Paper className="big-section">{children}</Paper>
       </Box>
     </Box>
   );
 };
 
-export default layout;
+export default Layout;

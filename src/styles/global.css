@@ -854,3 +854,31 @@ table tr {
   border-color: #1976d2 !important; /* MUI primary color */
   border-width: 2px !important;
 }
+
+.sidebar-header {
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+  color: var(--primary);
+  background: linear-gradient(135deg, #126b77, #15ace1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.big-section {
+  padding: 25px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 767px) {
+  .big-section {
+    padding: 0;
+  }
+}
+
+.big-section:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
