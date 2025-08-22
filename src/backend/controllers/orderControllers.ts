@@ -35,10 +35,21 @@ export async function createOrderHandler(req: NextRequest) {
   try {
     await connectDB();
     const { userId, products, totalAmount } = await req.json();
+    const { productId } = products[0];
 
     if (!products || products.length === 0) {
       return NextResponse.json(
         { message: "No products provided" },
+        { status: 400 }
+      );
+    }
+
+    // // ✅ Find the product
+    const product = await Product.findById(productId);
+
+    if (product.stock == 0) {
+      return NextResponse.json(
+        { message: `${product.title} is out of stock` },
         { status: 400 }
       );
     }

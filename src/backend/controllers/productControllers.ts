@@ -2,14 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { Product } from "../models/Product";
 import { connectDB } from "../config/db";
 import cloudinary from "../config/cloudinary";
+import { User } from "../models/User";
+import { Order } from "../models/Order";
 
 // GET all products
 export async function getProductsHandler() {
   try {
     await connectDB();
 
-    // ✅ filter products with stock greater than 0
-    const products = await Product.find({ stock: { $gt: 0 } });
+    // ✅ fetch all products (no stock filter)
+    const products = await Product.find();
 
     return NextResponse.json(products);
   } catch (error: any) {
@@ -179,13 +181,22 @@ export async function getMostPurchasedProductsHandler() {
   try {
     await connectDB();
 
-    // ✅ return products sorted by purchases (desc = most purchased first)
-    // ✅ also exclude products with stock = 0 (optional)
-    const products = await Product.find({ stock: { $gt: 0 } }).sort({
-      purchases: -1,
-    }); // -1 = descending, highest purchases first
+    // ✅ Get all products sorted by purchases (highest first)
+    const products = await Product.find().sort({ purchases: -1 });
 
-    return NextResponse.json(products);
+    // ✅ Get counts
+    const usersCount = await User.countDocuments();
+    const ordersCount = await Order.countDocuments();
+    const productsCount = await Product.countDocuments();
+
+    return NextResponse.json({
+      stats: {
+        users: usersCount,
+        orders: ordersCount,
+        products: productsCount,
+      },
+      products,
+    });
   } catch (error: any) {
     return NextResponse.json(
       { message: error.message || "Internal Server Error" },

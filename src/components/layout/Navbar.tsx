@@ -33,16 +33,37 @@ const Navbar = () => {
       console.error("Error fetching product:", error);
     }
   };
-
   useEffect(() => {
-    // Client-side cookie access
+    // Initial fetch from API
     getCartItems();
+
     const nameCookie = Cookies.get("name");
     const emailCookie = Cookies.get("email");
     setName(nameCookie || "");
     setEmail(emailCookie || "");
+
+    // Sync when cartCount cookie changes
+    const syncCartCount = () => {
+      const cookieCount = Cookies.get("cartCount");
+      if (cookieCount) {
+        setOrderCount(Number(cookieCount));
+      }
+    };
+
+    // Run once immediately
+    syncCartCount();
+
+    // Listen to changes across tabs/windows
+    window.addEventListener("storage", syncCartCount);
+
+    return () => {
+      window.removeEventListener("storage", syncCartCount);
+    };
   }, []);
-  console.log("orderCount", orderCount);
+
+  useEffect(() => {
+    Cookies.set("cartCount", orderCount.toString());
+  }, [orderCount]);
 
   const initial = name?.charAt(0).toUpperCase() || "";
 
@@ -78,11 +99,7 @@ const Navbar = () => {
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarCollapse">
-            <div className="navbar-nav ms-auto">
-              <Link href="/home" className="nav-item nav-link">
-                Home
-              </Link>
-            </div>
+            <div className="navbar-nav ms-auto">{/*  */}</div>
           </div>
 
           {/* Cart Icon */}

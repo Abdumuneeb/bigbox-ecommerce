@@ -13,6 +13,7 @@ const page = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [productDetails, setProductDetails] = useState<any>({});
+  const orderCount = Cookies.get("cartCount") || "0";
 
   const getProductDetails = async () => {
     setLoading(true);
@@ -50,14 +51,16 @@ const page = () => {
         status: "pending",
       };
 
-      const res = await axiosInstances.post(api.addToCart, dataToSend);
+      const res: any = await axiosInstances.post(api.addToCart, dataToSend);
       if (res.status === 201) {
         toast.success("Product added to cart successfully!");
+        const newCount = Number(orderCount) + 1;
+        Cookies.set("cartCount", newCount.toString());
+        window.dispatchEvent(new Event("storage"));
         router.push("/cart");
       }
-      console.log("Cart updated:", res.data);
-    } catch (error) {
-      console.error("Error adding to cart:", error);
+    } catch (error: any) {
+      toast.error(error.response.data.message);
     }
   };
 

@@ -86,7 +86,7 @@ const page = () => {
                 {products.map?.((content: any, index: number) => (
                   <div
                     className="col-lg-4 wow fadeIn"
-                    data-wow-delay="0.3s"
+                    style={{ cursor: "pointer" }}
                     onClick={(e) => handleClick(e, content._id)}
                     key={index}
                   >
@@ -103,7 +103,6 @@ const page = () => {
                       />
                       <a
                         className="case-overlay text-decoration-none category-link"
-                        href="#"
                         data-category="Educational Robots"
                       >
                         <small>{content.title}</small>

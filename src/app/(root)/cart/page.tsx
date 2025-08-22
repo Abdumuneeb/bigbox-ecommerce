@@ -11,6 +11,7 @@ const Page = () => {
   const [loading, setLoading] = useState(true);
   const [cartItems, setCartItems] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const orderCount = Cookies.get("cartCount") || "0";
   const userId = Cookies.get("id");
 
   const getCartItems = async () => {
@@ -39,6 +40,8 @@ const Page = () => {
 
       if (result.status === 200) {
         getCartItems();
+        Cookies.set("cartCount", "0");
+        window.dispatchEvent(new Event("storage"));
         toast.success("Checkout successful!");
         setShowModal(false);
       }
@@ -55,6 +58,9 @@ const Page = () => {
       );
       if (result.status === 200) {
         getCartItems();
+        const newCount = Number(orderCount) - 1;
+        Cookies.set("cartCount", newCount.toString());
+        window.dispatchEvent(new Event("storage"));
         toast.success("Item removed from cart successfully");
       }
     } catch (error) {
@@ -169,6 +175,7 @@ const Page = () => {
           </div>
           <div className="d-flex justify-content-end mt-4">
             <button
+              disabled={cartItems?.length == 0}
               className="btn btn-primary btn-lg rounded-pill px-4 shadow-sm"
               onClick={() => setShowModal(true)}
             >

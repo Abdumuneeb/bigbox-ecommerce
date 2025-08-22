@@ -23,7 +23,7 @@ import Link from "next/link";
 import Cookies from "js-cookie";
 import { usePathname, useRouter } from "next/navigation";
 
-const drawerWidth = 240;
+const drawerWidth = 270;
 
 // ✅ Inline SVG icons
 const InventoryIcon = () => (
@@ -101,8 +101,34 @@ const Layout = ({ children }: any) => {
 
   const drawer = (
     <div>
-      <div className="sidebar-header">
-        <Typography variant="h6">🐞 Bug Box</Typography>
+      <div>
+        <Box
+          sx={{
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            paddingTop: "40px",
+            paddingBottom: "10px",
+          }}
+        >
+          <Avatar
+            sx={{
+              bgcolor: "var(--primary)",
+              width: 50,
+              height: 50,
+              marginBottom: "10px",
+            }}
+          >
+            {initial}
+          </Avatar>
+          <Typography sx={{ marginBottom: "0 !important" }}>
+            {" "}
+            {name}{" "}
+          </Typography>
+          <Typography> {email} </Typography>
+        </Box>
       </div>
       <Divider />
       <List>
@@ -152,7 +178,13 @@ const Layout = ({ children }: any) => {
   );
 
   return (
-    <Box sx={{ display: "flex", backgroundColor: "#f4f7fe" }}>
+    <Box
+      sx={{
+        display: "flex",
+        backgroundColor: "#DCF2FB",
+        heigh: "100vh !important",
+      }}
+    >
       <CssBaseline />
       <AppBar position="fixed" className="appbar">
         <Toolbar>
@@ -168,11 +200,6 @@ const Layout = ({ children }: any) => {
           >
             <MenuIcon />
           </IconButton>
-
-          <Typography variant="h6" fontWeight="600" color="var(--primary)">
-            Dashboard
-          </Typography>
-
           <Box sx={{ flexGrow: 1 }} />
           <IconButton onClick={handleMenuOpen} size="small">
             <Avatar sx={{ bgcolor: "var(--primary)", width: 40, height: 40 }}>
@@ -246,9 +273,10 @@ const Layout = ({ children }: any) => {
           flexGrow: 1,
           p: 3,
           width: { xs: `calc(100% - ${drawerWidth}px)`, md: "100%" },
+          height: "100vh",
         }}
       >
-        <Toolbar /> {/* Keeps content below AppBar */}
+        <Toolbar />
         <Paper className="big-section">{children}</Paper>
       </Box>
     </Box>
