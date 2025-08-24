@@ -3,6 +3,18 @@ import { api } from "@/services/api";
 import { axiosInstances } from "@/services/axiosService";
 import React, { useEffect, useState } from "react";
 
+// 📊 Recharts
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
+
 interface Product {
   _id?: string;
   title: string;
@@ -27,7 +39,7 @@ const StatsDataTable = () => {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Fetch Products + Stats
+  // ✅ Fetch Products + Stats
   const getProducts = async () => {
     try {
       setLoading(true);
@@ -48,7 +60,7 @@ const StatsDataTable = () => {
     getProducts();
   }, []);
 
-  // Pagination Handlers
+  // ✅ Pagination Handlers
   const handleChangePage = (newPage: number) => setPage(newPage);
   const handleChangeRowsPerPage = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setRowsPerPage(parseInt(e.target.value, 10));
@@ -92,6 +104,66 @@ const StatsDataTable = () => {
               </div>
             </div>
           )}
+
+          {/* ✅ Responsive Line Chart Section */}
+          <div className="row mb-4 g-3">
+            <div className="col-12">
+              <div className="card shadow-sm border-0 h-100">
+                <div className="card-body">
+                  <h5 className="card-title text-center text-primary mb-4">
+                    Purchases vs Stock per Product
+                  </h5>
+                  <div style={{ width: "100%", height: "400px" }}>
+                    <ResponsiveContainer>
+                      <LineChart
+                        data={products}
+                        margin={{ top: 20, right: 30, left: 10, bottom: 20 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                        <XAxis
+                          dataKey="title"
+                          tick={{ fontSize: 12 }}
+                          interval={0}
+                          angle={-25}
+                          textAnchor="end"
+                          height={60}
+                        />
+                        <YAxis />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: "#fff",
+                            borderRadius: "8px",
+                            border: "1px solid #ddd",
+                          }}
+                        />
+                        <Legend verticalAlign="top" height={36} />
+                        {/* Purchases Line */}
+                        <Line
+                          type="monotone"
+                          dataKey="purchases"
+                          stroke="#82ca9d"
+                          strokeWidth={1}
+                          name="Purchases"
+                          dot={{ r: 4 }}
+                          activeDot={{ r: 6 }}
+                        />
+                        {/* Stock Line */}
+                        <Line
+                          type="monotone"
+                          dataKey="stock"
+                          stroke="#8884d8"
+                          strokeWidth={1}
+                          name="Stock"
+                          dot={{ r: 4 }}
+                          activeDot={{ r: 6 }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* ✅ Products Table */}
           <div className="table-responsive shadow rounded">

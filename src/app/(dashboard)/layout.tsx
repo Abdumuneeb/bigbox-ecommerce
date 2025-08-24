@@ -273,7 +273,7 @@ const Layout = ({ children }: any) => {
           flexGrow: 1,
           p: 3,
           width: { xs: `calc(100% - ${drawerWidth}px)`, md: "100%" },
-          height: "100vh",
+          height: "100%",
         }}
       >
         <Toolbar />
