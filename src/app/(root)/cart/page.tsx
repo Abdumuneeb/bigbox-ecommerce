@@ -32,11 +32,48 @@ const Page = () => {
     getCartItems();
   }, []);
 
+  // ✅ update quantity in local state
+  const handleUpdateQuantity = (
+    orderId: string,
+    productId: string,
+    newQty: number
+  ) => {
+    if (newQty < 1) return;
+    setCartItems((prev) =>
+      prev.map((order) =>
+        order._id === orderId
+          ? {
+              ...order,
+              products: order.products.map((p: any) =>
+                p.productId._id === productId ? { ...p, quantity: newQty } : p
+              ),
+            }
+          : order
+      )
+    );
+  };
+
+  // ✅ checkout with updated quantities
   const handleCheckout = async (e: any) => {
     e.preventDefault();
     try {
       setLoading(true);
-      const result = await axiosInstances.put(api.updateProductStatus(userId));
+
+      const payload = {
+        userId,
+        orders: cartItems.map((order: any) => ({
+          orderId: order._id,
+          products: order.products.map((item: any) => ({
+            productId: item.productId._id,
+            quantity: item.quantity,
+          })),
+        })),
+      };
+
+      const result = await axiosInstances.put(
+        api.updateProductStatus(userId),
+        payload
+      );
 
       if (result.status === 200) {
         getCartItems();
@@ -48,6 +85,8 @@ const Page = () => {
     } catch (error) {
       console.error("Error during checkout:", error);
       toast.error("Checkout failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -120,8 +159,9 @@ const Page = () => {
                 <tr>
                   <th>Image</th>
                   <th>Name</th>
-                  <th>Price</th>
+                  <th>Unit Price</th>
                   <th>Quantity</th>
+                  <th>Subtotal</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -149,7 +189,40 @@ const Page = () => {
                         <td className="text-success fw-bold">
                           ${item.productId.price}
                         </td>
-                        <td>{item.quantity}</td>
+                        <td>
+                          <div className="d-flex align-items-center">
+                            <button
+                              className="btn btn-sm btn-outline-secondary me-2"
+                              onClick={() =>
+                                handleUpdateQuantity(
+                                  order._id,
+                                  item.productId._id,
+                                  item.quantity - 1
+                                )
+                              }
+                              disabled={item.quantity <= 1}
+                            >
+                              -
+                            </button>
+                            <span className="px-2">{item.quantity}</span>
+                            <button
+                              className="btn btn-sm btn-outline-secondary ms-2"
+                              onClick={() =>
+                                handleUpdateQuantity(
+                                  order._id,
+                                  item.productId._id,
+                                  item.quantity + 1
+                                )
+                              }
+                            >
+                              +
+                            </button>
+                          </div>
+                        </td>
+                        {/* ✅ Subtotal */}
+                        <td className="fw-bold text-primary">
+                          ${(item.productId.price * item.quantity).toFixed(2)}
+                        </td>
                         <td>
                           <button
                             className="btn btn-outline-danger btn-sm rounded-pill px-3"
@@ -185,7 +258,7 @@ const Page = () => {
         </div>
       </div>
 
-      {/* Stylish Checkout Modal */}
+      {/* Checkout Modal */}
       {showModal && (
         <div
           className="modal fade show d-block"

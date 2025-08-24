@@ -89,42 +89,11 @@ export async function deleteOrderHandler(req: NextRequest, { params }: any) {
   }
 }
 
-// export async function completeOrdersHandler(req: NextRequest, { params }: any) {
-//   try {
-//     await connectDB();
-//     const { id } = await params;
-
-//     if (!id) {
-//       return NextResponse.json(
-//         { message: "User ID is required" },
-//         { status: 400 }
-//       );
-//     }
-
-//     const updatedOrders = await Order.updateMany(
-//       { userId: id, status: "pending" }, // ✅ match userId field
-//       { $set: { status: "completed", completedAt: new Date() } }
-//     );
-
-//     return NextResponse.json({
-//       message:
-//         updatedOrders.modifiedCount > 0
-//           ? "Orders updated successfully"
-//           : "No pending orders found for this user",
-//       updated: updatedOrders,
-//     });
-//   } catch (error: any) {
-//     return NextResponse.json(
-//       { message: error.message || "Internal Server Error" },
-//       { status: 500 }
-//     );
-//   }
-// }
-
 export async function completeOrdersHandler(req: NextRequest, { params }: any) {
   try {
     await connectDB();
     const { id } = await params;
+    const body = await req.json();
 
     if (!id) {
       return NextResponse.json(
@@ -133,45 +102,39 @@ export async function completeOrdersHandler(req: NextRequest, { params }: any) {
       );
     }
 
-    // 1️⃣ Find all pending orders for the user
-    const pendingOrders = await Order.find({ userId: id, status: "pending" });
+    const { orders } = body; // 👈 frontend sends updated quantities
 
-    if (pendingOrders.length === 0) {
-      return NextResponse.json(
-        { message: "No pending orders found for this user" },
-        { status: 404 }
-      );
-    }
+    // Loop through orders from frontend
+    for (const orderData of orders) {
+      const dbOrder = await Order.findById(orderData.orderId);
 
-    // 2️⃣ For each product in the orders → update purchases & stock
-    for (const order of pendingOrders) {
-      for (const item of order.products) {
+      if (!dbOrder) continue;
+
+      // update each product in this order
+      for (const p of orderData.products) {
         await Product.findByIdAndUpdate(
-          item.productId,
+          p.productId,
           {
             $inc: {
-              purchases: item.quantity, // increase purchase count
-              stock: -item.quantity, // decrease stock
+              purchases: p.quantity,
+              stock: -p.quantity,
             },
           },
           { new: true }
         );
       }
+
+      // update order to completed with final quantities
+      await Order.findByIdAndUpdate(orderData.orderId, {
+        $set: {
+          status: "completed",
+          completedAt: new Date(),
+          products: orderData.products, // overwrite with latest quantities
+        },
+      });
     }
 
-    // 3️⃣ Update all orders to completed
-    const updatedOrders = await Order.updateMany(
-      { userId: id, status: "pending" },
-      { $set: { status: "completed", completedAt: new Date() } }
-    );
-
-    return NextResponse.json({
-      message:
-        updatedOrders.modifiedCount > 0
-          ? "Orders completed successfully and products updated"
-          : "No pending orders found for this user",
-      updated: updatedOrders,
-    });
+    return NextResponse.json({ message: "Checkout successful" });
   } catch (error: any) {
     return NextResponse.json(
       { message: error.message || "Internal Server Error" },
