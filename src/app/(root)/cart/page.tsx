@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import CartTableSkeleton from "@/components/skeletons/TableSkeleton";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
+import Link from "next/link";
 
 const Page = () => {
   const [loading, setLoading] = useState(true);
@@ -133,9 +134,9 @@ const Page = () => {
               <nav aria-label="breadcrumb">
                 <ol className="breadcrumb justify-content-center justify-content-lg-start mb-lg-5">
                   <li className="breadcrumb-item">
-                    <a className="text-white" href="#">
+                    <Link className="text-white" href="/home">
                       Home
-                    </a>
+                    </Link>
                   </li>
                   <li
                     className="breadcrumb-item text-white active"

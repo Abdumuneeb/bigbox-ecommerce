@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api } from "@/services/api";
 import ProductCardSkeleton from "@/components/skeletons/ProductCardSkeleton";
+import Link from "next/link";
 
 const page = () => {
   const router = useRouter();
@@ -44,19 +45,19 @@ const page = () => {
                 Artificial Intelligence for Your Business
               </h1>
 
-              <a
-                href=""
+              <Link
+                href="/about-us"
                 className="btn btn-light py-sm-3 px-sm-5 rounded-pill me-3 animated slideInRight"
                 data-wow-delay="1.2s"
               >
                 Read More
-              </a>
+              </Link>
               <a
-                href=""
+                href="/about-us"
                 className="btn btn-outline-light py-sm-3 px-sm-5 rounded-pill animated slideInRight"
                 data-wow-delay="1.2s "
               >
-                Contact Us
+                About us
               </a>
             </div>
             <div className="col-lg-6 align-self-end text-center text-lg-end">

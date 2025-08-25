@@ -93,16 +93,6 @@ const page = () => {
                 </ol>
               </nav>
             </div>
-
-            {/* Optional Hero Image */}
-            {/* <div className="col-lg-6 align-self-end text-center text-lg-end">
-              <img
-                className="img-fluid"
-                src="/images/hero-img.png"
-                alt="Hero"
-                style={{ maxHeight: "300px" }}
-              />
-            </div> */}
           </div>
         </div>
       </div>

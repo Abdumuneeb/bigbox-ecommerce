@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 const Footer = () => {
@@ -13,9 +14,9 @@ const Footer = () => {
 
           <div className="col-md-6 col-lg-3 wow fadeIn" data-wow-delay="0.5s">
             <h5 className="text-white mb-4">Popular Link</h5>
-            <a className="btn btn-link" href="">
+            <Link className="btn btn-link" href="/about-us">
               About Us
-            </a>
+            </Link>
             <a className="btn btn-link" href="">
               Contact Us
             </a>
@@ -52,7 +53,7 @@ const Footer = () => {
               </div>
               <div className="col-md-6 text-center text-md-end">
                 <div className="footer-menu">
-                  <a href="">Home</a>
+                  <a href="/home">Home</a>
                   <a href="">Cookies</a>
                   <a href="">Help</a>
                 </div>
